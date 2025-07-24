@@ -1,5 +1,11 @@
-const authRoutes = require('./routes/auth');
-app.use('/api/auth', authRoutes);
+const express = require('express');
+const app = express();
 
-const profileRoutes = require('./routes/profile');
-app.use('/api/profile', profileRoutes);
+const authRoutes = require('./routes/auth'); // Bu satır da burada olmalı
+
+app.use(express.json()); // JSON gövde için gerekli
+app.use('/api/auth', authRoutes); // Route kullanımı
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
