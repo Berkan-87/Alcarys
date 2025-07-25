@@ -1,57 +1,55 @@
-// controllers/authController.js
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
+const JWT_SECRET = 'gizli_tarot_anahtari'; // .env'e taşı istersen
+
+// REGISTER
 const register = async (req, res) => {
+  const { name, surname, email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
-
-    // Kullanıcı zaten var mı kontrol et
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({ message: "Email already exists" });
-    }
+    if (existingUser)
+      return res.status(400).json({ message: 'Bu email zaten kullanılıyor' });
 
-    // Şifreyi hashle
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Yeni kullanıcı oluştur
-    const newUser = await User.create({
+    const user = new User({
+      name,
+      surname,
       email,
       password: hashedPassword,
     });
 
-    res.status(201).json({ message: "User registered successfully", userId: newUser._id });
-  } catch (error) {
-    res.status(500).json({ message: "Registration failed", error: error.message });
+    await user.save();
+
+    res.status(201).json({ message: 'Kayıt başarılı!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Sunucu hatası' });
   }
 };
 
+// LOGIN
 const login = async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const { email, password } = req.body;
-
-    // Kullanıcıyı bul
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
+    if (!user)
+      return res.status(400).json({ message: 'Geçersiz email veya şifre' });
 
-    // Şifreyi kontrol et
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
+    if (!isMatch)
+      return res.status(400).json({ message: 'Geçersiz email veya şifre' });
 
-    // JWT oluştur
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1d' });
 
-    res.status(200).json({ message: "Login successful", token });
-  } catch (error) {
-    res.status(500).json({ message: "Login failed", error: error.message });
+    res.status(200).json({ token, user: { id: user._id, name: user.name, surname: user.surname, email: user.email } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Sunucu hatası' });
   }
 };
 
