@@ -1,11 +1,27 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
 const app = express();
 
-const authRoutes = require('./routes/auth'); // Bu satır da burada olmalı
+// Orta katmanlar
+app.use(cors());
+app.use(express.json());
 
-app.use(express.json()); // JSON gövde için gerekli
-app.use('/api/auth', authRoutes); // Route kullanımı
+// Routes
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+// MongoDB bağlantısı
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
+
+// PORT değişkeni tanımlanmalı
+const PORT = process.env.PORT || 3000;
+
+// Server başlatma
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
 });

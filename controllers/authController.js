@@ -6,6 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'gizli_tarot_anahtari'; // .env kul
 
 // REGISTER
 const register = async (req, res) => {
+  console.log("Gelen veri:", req.body); 
   const { name, email, password } = req.body;  // surname kaldırıldı
 
   try {
