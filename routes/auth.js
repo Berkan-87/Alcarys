@@ -1,9 +1,7 @@
 const express = require('express');
-const { register, login } = require('../controllers/authController');
-const authMiddleware = require('../middlewares/authMiddleware');
-
-
 const router = express.Router();
+const { register, login } = require('../controllers/authController');
+const authMiddleware = require('../middlewares/authMiddleware');  // <-- Bunu ekle
 
 router.post('/register', register);
 router.post('/login', login);

@@ -1,62 +1,62 @@
+const User = require('../models/User'); // Kullanıcı modelini ayrıca oluşturacağız
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'gizli_tarot_anahtari'; // .env kullanman iyi olur
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey';
 
-// REGISTER
-const register = async (req, res) => {
-  console.log("Gelen veri:", req.body); 
-  const { name, email, password } = req.body;  // surname kaldırıldı
+exports.register = async (req, res) => {
+  const { name, email, password } = req.body;
 
   try {
+    // Email daha önce kayıtlı mı kontrol et
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'Bu email zaten kullanılıyor' });
+      return res.status(400).json({ message: 'Email zaten kullanılıyor.' });
     }
 
+    // Şifreyi hashle
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({
+    // Yeni kullanıcı oluştur
+    const newUser = new User({
       name,
       email,
       password: hashedPassword,
     });
 
-    await user.save();
+    await newUser.save();
 
-    res.status(201).json({ message: 'Kayıt başarılı!' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Sunucu hatası' });
+    res.status(201).json({ message: 'Kullanıcı başarıyla kayıt oldu.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Sunucu hatası.' });
   }
 };
 
-// LOGIN
-const login = async (req, res) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // Kullanıcı var mı kontrol et
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Geçersiz email veya şifre' });
+      return res.status(400).json({ message: 'Geçersiz email veya şifre.' });
     }
 
+    // Şifre doğrulama
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Geçersiz email veya şifre' });
+      return res.status(400).json({ message: 'Geçersiz email veya şifre.' });
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1d' });
-
-    res.status(200).json({
-      token,
-      user: { id: user._id, name: user.name, email: user.email },
+    // JWT oluştur
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: '1h',
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Sunucu hatası' });
+
+    res.json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Sunucu hatası.' });
   }
 };
-
-module.exports = { register, login };
