@@ -45,8 +45,8 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <h2>Welcome {user?.name || 'Kullanıcı'}!</h2>
 
-      <button onClick={() => navigate('/select')}>
-        Start Your Tarot Reading
+      <button onClick={() => navigate('/tarot')}>
+         Start Your Tarot Reading
       </button>
 
       <button onClick={handleLogout}>Log Out</button>
