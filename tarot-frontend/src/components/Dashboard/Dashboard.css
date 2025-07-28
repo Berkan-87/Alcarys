@@ -1,0 +1,46 @@
+.dashboard-container {
+    min-height: 100vh;
+    background-color: black;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.dashboard-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-container button {
+    padding: 0.75rem 1.5rem;
+    margin: 0.5rem;
+    font-size: 1rem;
+    background-color: #e94560;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dashboard-container button:hover {
+    background-color: #d72345;
+}
+
+body {
+    background-image: url('../../assets/bg.jpg');
+    background-size: 100% 700px;
+    /* Genişlik %100, yükseklik 300px */
+    background-repeat: no-repeat;
+    background-position: top center;
+    color: aliceblue;
+    margin-left: 650px;
+}
+
+h2 {
+    color: #fff;
+}

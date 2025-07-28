@@ -1,0 +1,49 @@
+.login-container {
+    width: 300px;
+    margin: 100px auto;
+    text-align: center;
+    font-family: sans-serif;
+    background-color: black;
+}
+
+.title {
+    margin-bottom: 30px;
+    font-size: 32px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.button-group button {
+    flex: 1;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.register-button {
+    background-color: #28a745;
+}
+
+.button-group button:hover {
+    opacity: 0.9;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+}
+
